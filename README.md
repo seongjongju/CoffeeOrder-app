@@ -43,7 +43,6 @@ PWA를 적용해 모바일 환경에서 앱처럼 사용할 수 있도록 구성
 ### 프론트엔드
 
 * Next.js App Router
-* React
 * TypeScript
 * Redux Toolkit
 * React Query
