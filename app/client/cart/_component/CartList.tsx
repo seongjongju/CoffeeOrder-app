@@ -11,13 +11,13 @@ import { useAppSelector } from '@/store/hook';
 import { formatPrice } from '@/app/util/format';
 import usePayment from '@/features/hooks/pay/usePayment';
 import useLoading from '@/features/hooks/loading/useLoading';
+import { UserProps } from '@/app/types/members/member';
 
-const CartList = () => {
+const CartList = ({user}: UserProps) => {
     const {isLoading, setIsLoading} = useLoading();
     const { modalShow, setModalShow, modalText, setModalText } = useModalShow();
     const { carts } = useCartQuery(); //카트 전체 조회
-    const user = useAppSelector(state => state.auth.user); //유저 목록
-    const userCarts = carts.filter(cart => cart.userId === user.userId); //로그인 된 유저의 장바구니 목록
+    const userCarts = carts.filter(cart => cart.userId === user?.userId); //로그인 된 유저의 장바구니 목록
 
     //결제 커스텀 훅
     const {addPayment} = usePayment(userCarts, "cart");

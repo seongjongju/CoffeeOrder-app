@@ -12,7 +12,9 @@ import { addCartApi } from '@/features/clientApi/cartApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppSelector } from '@/store/hook';
 import usePayment from '@/features/hooks/pay/usePayment';
+import { User } from '@/app/types/members/member';
 interface OptionProps {
+    user: User;
     viewProduct: {
         productCode: string;
         img: ProductImgType
@@ -30,13 +32,13 @@ interface OptionProps {
 }
 
 const OrderBar = memo(({
+    user,
     viewProduct, 
     lightly, 
     addState 
 }: OptionProps) => {
     const id = nanoid();
     const {modalShow, setModalShow, modalText, setModalText} = useModalShow(); //모달창
-    const user = useAppSelector(state => state.auth.user); //유저 정보
     const [totalCount, setTotalCount] = useState<number>(1);
 
     //옵션 합산금액

@@ -16,7 +16,6 @@ const AuthProvider = ({children}: {children: React.ReactNode}) => {
             try{
                 const data = await meApi();
                                 
-                dispatch(loginSuccess(data));
                 return;
             } catch(err: any) {
                 console.error("유저 정보 로드 실패:", err);

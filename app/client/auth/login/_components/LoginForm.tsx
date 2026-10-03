@@ -76,8 +76,8 @@ const LoginForm = () => {
                 await Notification.requestPermission();
             }
 
-            const loginData = await meApi();
-            dispatch(loginSuccess(loginData));
+            //const loginData = await meApi();
+            //dispatch(loginSuccess(loginData));
             window.location.href = '/'; 
             return;
         } catch(err: any) {
@@ -85,6 +85,8 @@ const LoginForm = () => {
             setModalText(err.response?.data?.message);
             setModalShow(true);
             return;
+        } finally {
+            setIsLoading(false);
         }
     };
 

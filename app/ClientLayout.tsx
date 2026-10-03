@@ -7,19 +7,21 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Header from './client/inc/header/Header';
 import AdminHeader from './admin/inc/admin_header/AdminHeader';
-import AuthProvider from './globalProvider/AuthProvider';
 import LoadingUi from '@/shared/client/components/loading/LoadingUi';
+import { User } from './types/members/member';
 
 interface ClientLayoutProps {
     children: React.ReactNode;
     initialHasSeen?: boolean; 
+    user: User;
 }
 
 const queryClient = new QueryClient();
 
 const ClientLayout = ({
     children,
-    initialHasSeen
+    initialHasSeen,
+    user
 }:ClientLayoutProps) => {
     const pathName = usePathname();
 
@@ -43,10 +45,8 @@ const ClientLayout = ({
                         <QueryClientProvider client={queryClient}>
                             <Provider store={store}>
                                 <PersistGate persistor={persistor}>
-                                    <AuthProvider>
-                                        <AdminHeader /> 
-                                        {children}
-                                    </AuthProvider>
+                                    <AdminHeader /> 
+                                    {children}
                                 </PersistGate>
                             </Provider>
                         </QueryClientProvider>
@@ -56,10 +56,8 @@ const ClientLayout = ({
                             <QueryClientProvider client={queryClient}>
                                 <Provider store={store}>
                                     <PersistGate persistor={persistor}>
-                                        <AuthProvider>
-                                            <Header />
-                                            {children}
-                                        </AuthProvider>
+                                        <Header user={user}/>
+                                        {children}
                                     </PersistGate>
                                 </Provider>
                             </QueryClientProvider>

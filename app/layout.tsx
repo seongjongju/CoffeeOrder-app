@@ -10,6 +10,7 @@ import { productGetApi } from "@/features/adminApi/adminProductApi";
 import QueryProvider from "./globalProvider/QueryProvider";
 import { getCartApi } from "@/features/clientApi/cartApi";
 import { orderGetApi } from "@/features/adminApi/adminOrderApi";
+import { getUser } from "@/features/serverApi/userApi";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +47,8 @@ export default async function RootLayout({
   const allCarts = await getCartApi(); //전체 장바구니 조회
   const allOrders = await orderGetApi(); //주문내역 조회
 
+  const user = await getUser();
+
   await Promise.all([
     queryClient.prefetchQuery({ queryKey: ['products'], queryFn: allProduct }),
     queryClient.prefetchQuery({ queryKey: ['carts'], queryFn: allCarts }),
@@ -64,7 +67,7 @@ export default async function RootLayout({
         />
         <QueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
-            <ClientLayout>
+            <ClientLayout user={user!}>
                 {children}
             </ClientLayout>
           </HydrationBoundary>

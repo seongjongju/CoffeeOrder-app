@@ -3,9 +3,11 @@ import '../_styled/view.css';
 import '../../auth/_styled/policyStyle.css';
 import VIewInterface from '../_components/VIewInterface';
 import LoadingUi from '@/shared/client/components/loading/LoadingUi';
+import { getUser } from '@/features/serverApi/userApi';
 
 const Viewpage = async ({ params }: {params : Promise<{ prd: string; }>}) => {
     const {prd} = await params;
+    const user = await getUser();
 
     return (
         <main 
@@ -13,9 +15,15 @@ const Viewpage = async ({ params }: {params : Promise<{ prd: string; }>}) => {
             style={{ paddingBottom: "0" }}
         >
             <Suspense fallback={<LoadingUi />}>
-                <VIewInterface 
-                    prdParams={prd}
-                />
+                {
+                    user &&
+                    (
+                        <VIewInterface 
+                            prdParams={prd}
+                            user={user}
+                        />
+                    )
+                }
             </Suspense>
         </main>
     );
