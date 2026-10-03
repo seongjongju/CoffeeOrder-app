@@ -11,3 +11,14 @@ export type Members = {
         createdAt: string;
     }>;
 };
+
+export type User = {
+    email: string,
+    phoneNumber: string,
+    userId: string,
+    userName: string,
+}
+
+export interface UserProps {
+    user: User;
+}

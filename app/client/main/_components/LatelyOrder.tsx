@@ -5,12 +5,11 @@ import 'swiper/css';
 import '@/shared/client/styled/order/order.css';
 import useOrderQuery from '@/features/hooks/query/useOrderQuery';
 import OrderHistoryItem from '../../order/order_history/_components/OrderHistoryItem';
-import { useAppSelector } from '@/store/hook';
+import { UserProps } from '@/app/types/members/member';
 
-const LatelyOrder = () => {
+const LatelyOrder = ({user}: UserProps) => {
     const {orders} = useOrderQuery();
-    const user = useAppSelector(state => state.auth.user); //유저 목록
-    const userOrders = orders.filter(order => order.userId === user.userId);
+    const userOrders = orders.filter(order => order.userId === user?.userId);
     const directOrder = userOrders.filter(order => order.items.length === 1); //단일상품만
 
     //중복 처리
@@ -44,7 +43,7 @@ const LatelyOrder = () => {
                     <div className='inner'>
                         <h2 className='main-title'>최근 주문한 메뉴!!</h2> 
                     </div>
-                )
+                )   
             }
             <Swiper
                 spaceBetween={12}

@@ -9,9 +9,11 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import OrderBar from './OrderBar';
 import { OptionState } from '@/app/types/products/product';
+import { User } from '@/app/types/members/member';
 
 interface ViewProps {
     prdParams: string;
+    user: User;
 };
 
 //옵션 초기값
@@ -41,7 +43,7 @@ const reducer = (state: OptionState, action: {type: string, payload: any}): Opti
     }
 };
 
-const VIewInterface = ({prdParams}: ViewProps) => {
+const VIewInterface = ({prdParams, user}: ViewProps) => {
     const {products} = useProductQuery();
     const searchParams = useSearchParams();
 
@@ -159,6 +161,7 @@ const VIewInterface = ({prdParams}: ViewProps) => {
             </nav>
 
             <OrderBar
+                user={user}
                 viewProduct={viewProduct}
                 lightly={lightly}
                 addState={addState}

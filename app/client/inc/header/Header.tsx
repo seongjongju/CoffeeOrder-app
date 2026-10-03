@@ -3,24 +3,25 @@ import Image from 'next/image';
 import BackIco from '@/public/icons/back_ico.png';
 import logo from '@/public/images/logo.svg';
 import cart from '@/public/images/cart.svg';
-import alert from '@/public/images/alert.svg';
+import alertIcon from '@/public/images/alert.svg';
 import menu from '@/public/images/menu.svg';
 import React, { useState } from 'react';
 import "../_styled/inc.css";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { getTitle } from '@/app/util/client/get.header.title';
 import Link from 'next/link';
-// import useAlert from '@/features/hooks/alert/useAlert';
 import CategorySideGnb from '@/shared/client/components/side/CategorySideGnb';
 import useCartQuery from '@/features/hooks/query/useCartQuery';
 import { useAppSelector } from '@/store/hook';
-import useAlert from '@/features/hooks/alert/useAlert';
+import { UserProps } from '@/app/types/members/member';
 
-const Header = () => {
+const Header = ({user}: UserProps) => {
     const [categorySideOn, setCategorySideOn] = useState<boolean>(false); //사이드 gnb (카테고리)
     const {carts} = useCartQuery() // 장바구니 리액트쿼리 커스텀 훅
-    const user = useAppSelector(state => state.auth.user); //유저 목록
-    const {userAlerts} = useAlert(); //해당 유저의 알람 내역
+    
+    const alert = useAppSelector(state => state.alert.items); //알람 내역
+    const userAlerts = alert.filter(al => al.userId === user?.userId); //해당 유저의 알림만 불러옴
+
     const pathName = usePathname();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -65,7 +66,7 @@ const Header = () => {
                                     >
                                         {userAlerts.length}
                                     </span>
-                                    <img src={alert.src} alt='알림' />
+                                    <img src={alertIcon.src} alt='알림' />
                                 </Link>
                                 <button
                                     onClick={(e:React.MouseEvent<HTMLButtonElement>) => {
@@ -127,7 +128,7 @@ const Header = () => {
                                             >
                                                 {userAlerts.length}
                                             </span>
-                                            <img src={alert.src} alt='알림' />
+                                            <img src={alertIcon.src} alt='알림' />
                                         </Link>
                                         <button
                                             onClick={(e:React.MouseEvent<HTMLButtonElement>) => {

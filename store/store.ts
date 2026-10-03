@@ -16,7 +16,7 @@ import authReducer from '@/store/auth/authSlice';
 const persistConfig = {
     key: 'root', 
     storage, 
-    whitelist: ['auth', 'alert'],
+    whitelist: ['alert'],
 };
 
 const rootReducer = combineReducers({

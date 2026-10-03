@@ -11,10 +11,10 @@ import { logoutApi } from '@/features/clientApi/authApi';
 import { logout } from '@/store/auth/authSlice';
 import { formatPhoneNumber } from '@/app/util/format';
 import { allDeleteAlert } from '@/store/alert/alertSlice';
+import { UserProps } from '@/app/types/members/member';
 
-const MypageInterface = () => {
+const MypageInterface = ({user}: UserProps) => {
     const {modalShow, setModalShow, modalText, setModalText} = useModalShow();
-    const user = useAppSelector(state => state.auth.user);
     const dispatch = useAppDispatch();
 
     const handleClickLogout = async () => {
@@ -28,7 +28,6 @@ const MypageInterface = () => {
             };
 
             setModalText(data.message);   
-            dispatch(logout());         
             dispatch(allDeleteAlert());
             return;
         } catch(error: any) {

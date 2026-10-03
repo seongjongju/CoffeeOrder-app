@@ -4,9 +4,11 @@ import MainVisual from './MainVisual';
 import Suggestion from './Suggestion';
 import MenuTabItems from './MenuTabItems';
 import LatelyOrder from './LatelyOrder';
+import { getUser } from '@/features/serverApi/userApi';
 
-const MainUI = () => {
-    
+const MainUI = async () => {
+    const user = await getUser();
+
     return (
         <main className='main'>
             <MainVisual />
@@ -16,7 +18,14 @@ const MainUI = () => {
             </div>
             <Suggestion />
 
-            <LatelyOrder />
+            {
+                user && 
+                (
+                    <LatelyOrder 
+                        user={user}
+                    />
+                )
+            }
             
             <div className='inner'>
                 <h2 className='main-title'>주문 하기!!</h2>             

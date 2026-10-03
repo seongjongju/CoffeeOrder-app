@@ -4,11 +4,11 @@ import React from 'react';
 import OrderHistoryItem from './OrderHistoryItem';
 import { useAppSelector } from '@/store/hook';
 import OrderItemNone from './OrderItemNone';
+import { UserProps } from '@/app/types/members/member';
 
-const OrderHistoryList = () => {
+const OrderHistoryList = ({user}: UserProps) => {
     const {orders} = useOrderQuery();
-    const user = useAppSelector(state => state.auth.user); //유저 목록
-    const userOrders = orders.filter(order => order.userId === user.userId);
+    const userOrders = orders.filter(order => order.userId === user?.userId);
 
     return (
         <div className={`inner ${userOrders.length === 0 ? "order-null" : ""}`}>
