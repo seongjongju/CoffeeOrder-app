@@ -23,6 +23,18 @@ export async function POST(request: NextRequest) {
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
 
+        console.log('===== PAY APPROVE START =====');
+console.log('url:', request.url);
+console.log('orderType:', orderType);
+console.log('authResultCode:', authResultCode);
+console.log('authToken:', authToken ? 'EXISTS' : 'MISSING');
+console.log('tid:', tid);
+console.log('amount:', amount);
+console.log('orderId:', orderId);
+console.log('clientId:', clientId ? 'EXISTS' : 'MISSING');
+console.log('secretKey:', secretKey ? 'EXISTS' : 'MISSING');
+console.log('nicepayUrl:', process.env.NEXT_PUBLIC_NICEPAY_URL);
+
         const db = (await connectDB).db(dbName);
 
         //pending 상태의 결제 데이터 조회
