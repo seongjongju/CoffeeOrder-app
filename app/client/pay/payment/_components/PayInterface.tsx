@@ -31,6 +31,11 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                 const pay_obj : any = window ;
                 const { AUTHNICE } = pay_obj
 
+                console.log(
+                    'NICEPAY returnUrl:',
+                    `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve?orderType=${orderType}`
+                );
+
                 AUTHNICE.requestPay({
                     clientId: process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID,
                     method: 'card',
@@ -45,7 +50,7 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                     }
                 });
             }
-            
+
             return;
         }catch(err: any) {
             console.error(err.response?.data?.message);
