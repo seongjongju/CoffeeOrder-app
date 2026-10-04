@@ -6,7 +6,10 @@ const dbName = process.env.DB_NAME;
 
 // 1. 나이스페이 관리자 등록 검증용 GET 요청 처리 (200 OK)
 export async function GET() {
-    return NextResponse.json({ status: "OK" }, { status: 200 });
+    return new NextResponse("OK", {
+        status: 200,
+        headers: { "Content-Type": "text/plain" },
+    });
 }
 
 export async function POST(request: NextRequest) {
@@ -30,9 +33,13 @@ export async function POST(request: NextRequest) {
             bodyData = {};
         }
 
-        // 3. 관리자 등록 시 보낼 검증(Ping) 요청 및 빈 데이터 예외 처리
+        // ⭐ [수정] 관리자 등록 시 보낼 검증(Ping) 요청 및 빈 데이터 예외 처리
+        // 나이스페이 검증을 통과하려면 반드시 다른 문자 없이 "OK"만 리턴해야 합니다.
         if (!bodyData || !bodyData.orderId) {
-            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+            return new NextResponse("OK", {
+                status: 200,
+                headers: { "Content-Type": "text/plain" },
+            });
         }
 
         const { status, orderId, amount, tid, resultCode } = bodyData;
@@ -48,10 +55,10 @@ export async function POST(request: NextRequest) {
 
         const db = (await connectDB).db(dbName);
 
-        // 이미 처리된 결제인지 확인
+        // ⭐ [수정] 이미 처리된 결제여도 나이스페이에는 "OK"를 주어야 재요청을 안 보냅니다.
         const alreadyPaid = await db.collection('payments').findOne({ orderId: orderId });
         if (alreadyPaid) {
-            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+            return new NextResponse("OK", { status: 200, headers: { "Content-Type": "text/plain" } });
         }
 
         // 임시 대기방에서 주문 조회
@@ -61,8 +68,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ result: "FAIL", message: "유효한 결제 대기 내역을 찾을 수 없습니다." }, { status: 400 });
         }
 
+        // ⭐ [수정] 이미 처리 중인 상태도 "OK" 처리
         if (selectAmount.status === 'paid' || selectAmount.status === 'fail') {
-            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+            return new NextResponse("OK", { status: 200, headers: { "Content-Type": "text/plain" } });
         }
 
         // 금액 검증
@@ -144,11 +152,17 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ result: "FAIL", message: "오류로 인해 결제에 실패하였습니다." }, { status: 400 });
         }
 
-        return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
-
+        // ⭐ [수정] 최종 비즈니스 로직 성공 시 나이스페이가 원하는 "OK" 전달
+        return new NextResponse("OK", {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+        });
     } catch (err) {
         console.error("Webhook 처리 중 치명적 에러 발생:", err);
-        // 에러가 발생해도 나이스페이 등록 검증 시에는 200 응답 반환
-        return NextResponse.json({ result: "FAIL", message: "Internal Server Error", error: err }, { status: 200 });
+        // ⭐ [수정] 등록 단계에서 치명적 에러가 나더라도 우선 나이스페이에는 텍스트를 반환하도록 설계
+        return new NextResponse("FAIL", {
+            status: 200,
+            headers: { "Content-Type": "text/plain" },
+        });
     }
 }
