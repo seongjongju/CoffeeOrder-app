@@ -8,6 +8,12 @@ export async function POST(request:NextRequest) {
     const body = await request.json();
     const orderItems: Item[] = body.orderItems;
 
+    /* 디버깅 콘솔 */
+    console.log("주문서생성-------------------------");
+    console.log("json body : ", body);
+    console.log("orderItems : ", orderItems);
+    console.log("주문서생성-------------------------");
+
     try{
         if(!orderItems) {
             return NextResponse.json({error: "요청 값 불일치 또는 잘못된 값", message: "주문 오류! 관리자에게 문의해주세요."}, {status: 401});

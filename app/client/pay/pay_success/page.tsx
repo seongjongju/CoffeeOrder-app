@@ -6,8 +6,6 @@ import PaySuccessInterface from './_components/PaySuccessInterface';
 const PaySuccess = async () => {
     const user = await getUser();
 
-    
-
     return (
         <div className='pay-main'>
             <nav className='inner'>

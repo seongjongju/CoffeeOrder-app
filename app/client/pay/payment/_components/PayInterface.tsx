@@ -42,7 +42,7 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                     orderId: paymentData.orderId,
                     amount: paymentData.amount,
                     goodsName: payProductName,
-                    notificationUrl: `https://myserver.com/api/pay/pay_webhook?orderType=${orderType}`,
+                    notificationUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_webhook?orderType=${orderType}`,
                     returnUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve?orderType=${orderType}`, //API를 호출할 Endpoint 입력
                     fnError: function (result: any) {
                         alert('고객용메시지 : ' + result.errorMsg + '\n개발자확인용 : ' + result.msg);

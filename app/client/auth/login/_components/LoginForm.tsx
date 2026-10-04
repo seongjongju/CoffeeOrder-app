@@ -76,8 +76,6 @@ const LoginForm = () => {
                 await Notification.requestPermission();
             }
 
-            //const loginData = await meApi();
-            //dispatch(loginSuccess(loginData));
             window.location.href = '/'; 
             return;
         } catch(err: any) {

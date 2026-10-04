@@ -12,6 +12,15 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { status, orderId, amount, tid, resultCode } = body;
 
+        /* 디버깅 콘솔 */
+        console.log("웹훅-------------------------");
+        console.log("status : ", status);
+        console.log("orderId : ", orderId);
+        console.log("amount : ", amount);
+        console.log("tid : ", tid);
+        console.log("resultCode : ", resultCode);
+        console.log("웹훅-------------------------");
+
         const db = (await connectDB).db(dbName);
 
         // 이미 처리된 결제인지 확인

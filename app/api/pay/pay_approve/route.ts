@@ -9,6 +9,11 @@ const dbName = process.env.DB_NAME;
 const clientId = process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID;
 const secretKey = process.env.NEXT_PUBLIC_NICEPAY_SECRET_KEY;
 
+/* 디버깅 콘솔 */
+console.log("리턴URL-------------------------");
+console.log("clientId :", clientId);
+console.log("secretKey :", secretKey);
+
 export async function POST(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.nextUrl);
@@ -22,6 +27,15 @@ export async function POST(request: NextRequest) {
         const tid = formData.get("tid") as string;
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
+
+        /* 디버깅 콘솔 */
+        console.log("authResultCode :", authResultCode);
+        console.log("authToken :", authToken);
+        console.log("paymentKey :", paymentKey);
+        console.log("tid :", tid);
+        console.log("amount :", amount);
+        console.log("orderId :", orderId);
+        console.log("리턴URL-------------------------");
 
         const db = (await connectDB).db(dbName);
 
@@ -63,6 +77,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.redirect(new URL(`/client/pay/pay_fail?error=${encodeURIComponent('결제실패')}&status=fail&message=${encodeURIComponent('오류로 인해 결제에 실패하였습니다.')}`, request.nextUrl), 303);
         }
 
+        console.log("승인 요청 TID:", tid, new Date().toISOString())
+
         //나이스페이먼츠 승인 API 호출
         const response = await fetch(`${process.env.NEXT_PUBLIC_NICEPAY_URL}/${tid}`, {
             method: "POST",
@@ -74,6 +90,11 @@ export async function POST(request: NextRequest) {
         });
 
         const resultData = await response.json();
+
+        console.log('승인--------------------');
+        console.log("response:", response);
+        console.log("resultData:", resultData);
+        console.log('승인--------------------');
 
         //최종 결제 승인 실패 시 처리
         if (!response.ok || resultData.resultCode !== "0000") {
