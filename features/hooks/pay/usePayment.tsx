@@ -18,14 +18,14 @@ const usePayment = (
     const addPayment = useCallback(async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            const data = await payCreateApi(items);
+            const data = await payCreateApi(items, orderType);
 
             if (data.status === "fail") {
                 console.log(data.message);
                 return;
             }
             console.log(data.message);
-            router.push(`/client/pay/payment?orderId=${data.orderId}&orderType=${orderType}`);
+            router.push(`/client/pay/payment?orderId=${data.orderId}`);
             return;
         } catch (err: any) {
             console.error(err.response?.data?.message);

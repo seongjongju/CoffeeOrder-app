@@ -6,11 +6,11 @@ const dbName = process.env.DB_NAME;
 
 export async function POST(request: NextRequest) {
     try {
-        const { searchParams } = new URL(request.nextUrl);
-        const orderType = searchParams.get('orderType');
-
         const body = await request.json();
         const { status, orderId, amount, tid, resultCode } = body;
+
+        const formData = await request.formData();
+        const orderType = formData.get("orderType") as string; 
 
         const db = (await connectDB).db(dbName);
 
@@ -83,13 +83,13 @@ export async function POST(request: NextRequest) {
             // payments 컬렉션으로 이관
             await db.collection('payments').insertOne({
                 orderId: orderId,
+                orderType: orderType,
                 userId: selectAmount.userId,
                 userName: selectAmount.userName,
                 items: selectAmount.items,
                 amount: amount,
                 productName: selectAmount.productName,
                 tid: tid,
-                orderType: orderType,
                 status: "paid",
                 createdAt: new Date()
             });

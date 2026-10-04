@@ -14,7 +14,6 @@ interface paymentInterfaceProps {
 
 const PayInterface = ({paymentData}: paymentInterfaceProps) => {
     const {isLoading, setIsLoading} = useLoading();
-    const orderType = useSearchParams().get('orderType'); //orderType 확인
     const {confilmShow, setConfilmShow, confilmText, setConfilmText} = useConfilmShow();
 
     //결제
@@ -31,19 +30,15 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                 const pay_obj : any = window ;
                 const { AUTHNICE } = pay_obj
 
-                console.log(
-                    'NICEPAY returnUrl:',
-                    `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve?orderType=${orderType}`
-                );
-
                 AUTHNICE.requestPay({
                     clientId: process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID,
                     method: 'card',
                     orderId: paymentData.orderId,
+                    orderType: paymentData.orderType,
                     amount: paymentData.amount,
                     goodsName: payProductName,
                     notificationUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_webhook`,
-                    returnUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve?orderType=${orderType}`, //API를 호출할 Endpoint 입력
+                    returnUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve`, //API를 호출할 Endpoint 입력
                     fnError: function (result: any) {
                         alert('고객용메시지 : ' + result.errorMsg + '\n개발자확인용 : ' + result.msg);
                         setIsLoading(false);
