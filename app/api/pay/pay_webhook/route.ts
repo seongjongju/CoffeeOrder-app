@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
         const { status, orderId, amount, tid, resultCode } = body;
 
         const formData = await request.formData();
-        const orderType = formData.get("orderType") as string; 
+        const mallReserved = formData.get("mallReserved") as string;
+        const {orderType} = JSON.parse(mallReserved);
 
         const db = (await connectDB).db(dbName);
 

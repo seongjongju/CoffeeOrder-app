@@ -19,7 +19,9 @@ export async function POST(request: NextRequest) {
         const tid = formData.get("tid") as string;
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
-        const orderType = formData.get("orderType") as string; 
+
+        const mallReserved = formData.get("mallReserved") as string;
+        const {orderType} = JSON.parse(mallReserved);
 
         /* 디버깅 콘솔 */
         console.log("authResultCode :", authResultCode);
