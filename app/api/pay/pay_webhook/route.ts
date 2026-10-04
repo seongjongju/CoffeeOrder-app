@@ -4,12 +4,23 @@ import { NextRequest, NextResponse } from "next/server";
 
 const dbName = process.env.DB_NAME;
 
+// 1. 나이스페이 관리자 등록 검증용 GET 요청 처리
+export async function GET() {
+    return NextResponse.json({ status: "OK" }, { status: 200 });
+}
+
 export async function POST(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.nextUrl);
         const orderType = searchParams.get('orderType');
 
-        const body = await request.json();
+        // 2. 관리자 등록 Ping 및 빈 데이터 수신 시 에러 방지
+        const body = await request.json().catch(() => null);
+
+        if (!body || !body.orderId) {
+            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+        }
+
         const { status, orderId, amount, tid, resultCode } = body;
 
         /* 디버깅 콘솔 */
