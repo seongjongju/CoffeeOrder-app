@@ -6,16 +6,9 @@ const dbName = process.env.DB_NAME;
 
 export async function POST(request: NextRequest) {
     try {
-        const formData = await request.formData();
-
-        // 2. formData.get()을 사용하여 각 값 추출 (string 타입으로 반환됨)
-        const status = formData.get("status") as string;
-        const orderId = formData.get("orderId") as string;
-        const amount = formData.get("amount") as string;
-        const tid = formData.get("tid") as string;
-        const resultCode = formData.get("resultCode") as string;
-
-        const mallReserved = formData.get("mallReserved") as string;
+        const body = await request.json();
+        const { status, orderId, amount, tid, resultCode, mallReserved } = body;
+        
         const {orderType} = JSON.parse(mallReserved);
 
         const db = (await connectDB).db(dbName);
