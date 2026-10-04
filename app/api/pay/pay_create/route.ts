@@ -7,11 +7,13 @@ const dbName = process.env.DB_NAME;
 export async function POST(request:NextRequest) {
     const body = await request.json();
     const orderItems: Item[] = body.orderItems;
+    const orderType = body.orderType;
 
     /* 디버깅 콘솔 */
     console.log("주문서생성-------------------------");
     console.log("json body : ", body);
     console.log("orderItems : ", orderItems);
+    console.log("orderType : ", orderType);
     console.log("주문서생성-------------------------");
 
     try{
@@ -42,6 +44,7 @@ export async function POST(request:NextRequest) {
         //결제 상태 = pending
         await db.collection('payments_temp').insertOne({
             orderId: `ORD-${newOrderId}`,
+            orderType: orderType,
             userId: userId,
             userName: userName,
             status: 'pending',
@@ -51,7 +54,7 @@ export async function POST(request:NextRequest) {
             createAt: new Date()
         });
 
-        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD-${newOrderId}`, items: orderItems });
+        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD-${newOrderId}`, orderType: orderType, items: orderItems });
     }catch(err) {
         console.error(err);
         return NextResponse.json({ status: "fail", error: "주문서 생성 오류", message: "결제 준비 오류" }, {status: 500});

@@ -2,10 +2,11 @@ import { Item } from "@/app/types/pay/pay";
 import { api, api_1 } from "./base";
 
 //주문서 생성
-export const payCreateApi = async (orderItems: Item[]) => {
+export const payCreateApi = async (orderItems: Item[], orderType: string) => {
     const res = await api.post('/pay/pay_create',
         {
-            orderItems
+            orderItems,
+            orderType
         }
     );
 

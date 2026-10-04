@@ -29,6 +29,7 @@ export interface Item {
 export type paymentData = {
     userId: string;
     userName: string;
+    orderType: string;
     amount: number;
     productName: string;
     createAt: string;

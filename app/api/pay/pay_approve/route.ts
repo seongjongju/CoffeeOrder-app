@@ -9,16 +9,8 @@ const dbName = process.env.DB_NAME;
 const clientId = process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID;
 const secretKey = process.env.NEXT_PUBLIC_NICEPAY_SECRET_KEY;
 
-/* 디버깅 콘솔 */
-console.log("리턴URL-------------------------");
-console.log("clientId :", clientId);
-console.log("secretKey :", secretKey);
-
 export async function POST(request: NextRequest) {
     try {
-        const { searchParams } = new URL(request.nextUrl);
-        const orderType = searchParams.get('orderType');
-
         const formData = await request.formData();
 
         const authResultCode = formData.get("authResultCode") as string;
@@ -28,6 +20,9 @@ export async function POST(request: NextRequest) {
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
 
+        const mallReserved = formData.get("mallReserved") as string;
+        const {orderType} = JSON.parse(mallReserved);
+
         /* 디버깅 콘솔 */
         console.log("authResultCode :", authResultCode);
         console.log("authToken :", authToken);
@@ -35,6 +30,7 @@ export async function POST(request: NextRequest) {
         console.log("tid :", tid);
         console.log("amount :", amount);
         console.log("orderId :", orderId);
+        console.log("orderType :", orderType);
         console.log("리턴URL-------------------------");
 
         const db = (await connectDB).db(dbName);
@@ -153,13 +149,13 @@ export async function POST(request: NextRequest) {
         //결제 성공 완료 처리
         await db.collection('payments').insertOne({
             orderId: orderId,
+            orderType: orderType,
             userId: selectAmount.userId,
             userName: selectAmount.userName,
             items: selectAmount.items,
             amount: amount,
             productName: selectAmount.productName,
             tid: tid,
-            orderType: orderType,
             status: "paid",
             createdAt: new Date()
         });
