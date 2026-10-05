@@ -11,20 +11,10 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { status, amount, tid, resultCode, mallReserved, orderId } = body;
 
-        console.log("body:", body);
         
-        let orderType = null;
-        if (mallReserved) {
-            try {
-                if (typeof mallReserved === "string" && mallReserved.trim().startsWith("{")) {
-                    const parsed = JSON.parse(mallReserved);
-                    orderType = parsed.orderType;
-                } else if (typeof mallReserved === "object") {
-                    orderType = mallReserved.orderType;
-                }
-            } catch (e) {
-                console.warn("mallReserved 파싱 예외 발생:", e);
-            }
+        if (mallReserved && mallReserved.includes("TEST 데이터")) {
+            console.log("나이스페이 웹훅 등록 테스트 요청 수신 성공");
+            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
         }
 
         const db = (await connectDB).db(dbName);
@@ -39,8 +29,7 @@ export async function POST(request: NextRequest) {
         const selectAmount = await db.collection('payments_temp').findOne({ orderId: orderId });
 
         if (!selectAmount) {
-            console.log("❌ [400 원인]: payments_temp 컬렉션에서 orderId를 못 찾음 ->", orderId);
-            return NextResponse.json({ result: "FAIL", message: "유효한 결제 대기 내역을 찾을 수 없습니다." }, { status: 400 });
+            return NextResponse.json({ result: "FAIL", message: "유효한 결제 대기 내역을 찾을 수 없습니다." }, { status: 200 });
         }
 
         if (selectAmount.status === 'paid' || selectAmount.status === 'fail') {
@@ -49,12 +38,11 @@ export async function POST(request: NextRequest) {
 
         // 금액 검증
         if (Number(selectAmount.amount) !== Number(amount)) {
-            console.log("❌ [400 원인]: 금액 불일치! DB금액:", selectAmount.amount, "/ PG금액:", amount);
             await db.collection('payments_temp').updateOne(
                 { orderId: orderId },
                 { $set: { status: "fail", createdAt: new Date() } }
             );
-            return NextResponse.json({ result: "FAIL", message: "결제 금액이 일치하지 않아 처리가 취소되었습니다." }, { status: 400 });
+            return NextResponse.json({ result: "FAIL", message: "결제 금액이 일치하지 않아 처리가 취소되었습니다." }, { status: 200 });
         }
 
         if (resultCode === "0000") {
@@ -72,7 +60,6 @@ export async function POST(request: NextRequest) {
                         });
 
                         if(realInv?.quantity <= 0 || realInv?.quantity < totalCount) {
-                            console.log("❌ [400 원인]: 재고 부족! 현재재고:", realInv?.quantity, "/ 요청수량:", totalCount);
                             await db.collection('payments_temp').updateOne(
                                 { orderId: orderId },
                                 {
@@ -83,7 +70,7 @@ export async function POST(request: NextRequest) {
                                 }
                             );
 
-                            return NextResponse.json({ result: "FAIL", message: "재고 부족" }, { status: 400 });
+                            return NextResponse.json({ result: "FAIL", message: "재고 부족" }, { status: 200 });
                         }
 
                         bulkOps.push({
@@ -100,10 +87,16 @@ export async function POST(request: NextRequest) {
                 await db.collection('inventory').bulkWrite(bulkOps);
             }
 
+            const isOrderId = await db.collection('payments_temp').findOne({ orderId: orderId });
+
+            if (!isOrderId) {
+                return NextResponse.json({ result: "FAIL", message: "주문 정보를 찾을 수 없습니다." }, { status: 200 });
+            }
+
             // payments 컬렉션으로 이관
             await db.collection('payments').insertOne({
                 orderId: orderId,
-                orderType: orderType,
+                orderType: isOrderId.orderType,
                 userId: selectAmount.userId,
                 userName: selectAmount.userName,
                 items: selectAmount.items,
@@ -118,7 +111,7 @@ export async function POST(request: NextRequest) {
             await db.collection('payments_temp').deleteOne({ orderId: orderId });
 
             //장바구니 결제 시, 장바구니를 비워준다.
-            if(orderType === "cart") {
+            if(isOrderId.orderType === "cart") {
                 await db.collection('carts').deleteMany({userId: selectAmount.userId});
             }
 
@@ -128,7 +121,7 @@ export async function POST(request: NextRequest) {
                 { orderId: orderId },
                 { $set: { status: "fail", createdAt: new Date() } }
             );
-            return NextResponse.json({ result: "FAIL", message: "오류로 인해 결제에 실패하였습니다." }, { status: 400 });
+            return NextResponse.json({ result: "FAIL", message: "오류로 인해 결제에 실패하였습니다." }, { status: 200 });
         }
 
         return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
