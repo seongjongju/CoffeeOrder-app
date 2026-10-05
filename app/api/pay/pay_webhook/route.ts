@@ -4,6 +4,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const dbName = process.env.DB_NAME;
 
+// 나이스페이 웹훅 규격용 공통 OK 응답 헬퍼
+const sendOkResponse = () => {
+    return new NextResponse("OK", {
+        status: 200,
+        headers: { "Content-Type": "text/plain; charset=utf-8" },
+    });
+};
+
 export async function POST(request: NextRequest) {
     console.log("=== 웹훅 API 요청 수신 시작 ===");
 
@@ -11,10 +19,9 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { status, amount, tid, resultCode, mallReserved, orderId } = body;
 
-        
         if (mallReserved && mallReserved.includes("TEST 데이터")) {
             console.log("나이스페이 웹훅 등록 테스트 요청 수신 성공");
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
         const db = (await connectDB).db(dbName);
@@ -22,7 +29,7 @@ export async function POST(request: NextRequest) {
         // 이미 처리된 결제인지 확인
         const alreadyPaid = await db.collection('payments').findOne({ orderId: orderId });
         if (alreadyPaid) {
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
         // 임시 대기방에서 주문 조회
@@ -30,11 +37,11 @@ export async function POST(request: NextRequest) {
 
         if (!selectAmount) {
             console.error("유효한 결제 대기 내역을 찾을 수 없습니다.");
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
         if (selectAmount.status === 'paid' || selectAmount.status === 'fail') {
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
         // 금액 검증
@@ -44,7 +51,7 @@ export async function POST(request: NextRequest) {
                 { $set: { status: "fail", createdAt: new Date() } }
             );
             console.error("결제 금액이 일치하지 않아 처리가 취소되었습니다.");
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
         if (resultCode === "0000") {
@@ -73,7 +80,7 @@ export async function POST(request: NextRequest) {
                             );
 
                             console.error("재고 부족");
-                            return NextResponse.json("OK", { status: 200 });
+                            return sendOkResponse();
                         }
 
                         bulkOps.push({
@@ -94,7 +101,7 @@ export async function POST(request: NextRequest) {
 
             if (!isOrderId) {
                 console.error("주문 정보를 찾을 수 없습니다.");
-                return NextResponse.json("OK", { status: 200 });
+                return sendOkResponse();
             }
 
             // payments 컬렉션으로 이관
@@ -126,10 +133,10 @@ export async function POST(request: NextRequest) {
                 { $set: { status: "fail", createdAt: new Date() } }
             );
             console.log("오류로 인해 결제에 실패 하였습니다.");
-            return NextResponse.json("OK", { status: 200 });
+            return sendOkResponse();
         }
 
-        return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+        return sendOkResponse();
 
     } catch (err) {
         console.error("Webhook 처리 중 치명적 에러 발생:", err);
