@@ -21,7 +21,15 @@ export async function POST(request: NextRequest) {
         const orderId = formData.get("orderId") as string; 
 
         const mallReserved = formData.get("mallReserved") as string;
-        const {orderType} = JSON.parse(mallReserved);
+        let orderType = null;
+        if (mallReserved) {
+            try {
+                const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
+                orderType = parsed.orderType;
+            } catch (e) {
+                console.warn("mallReserved 파싱 예외 발생:", e);
+            }
+        }
 
         /* 디버깅 콘솔 */
         console.log("authResultCode :", authResultCode);
