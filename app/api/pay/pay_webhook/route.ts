@@ -2,9 +2,6 @@ import { connectDB } from "@/app/lib/database";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
-
 const dbName = process.env.DB_NAME;
 
 export async function POST(request: NextRequest) {
@@ -48,6 +45,7 @@ export async function POST(request: NextRequest) {
         const selectAmount = await db.collection('payments_temp').findOne({ orderId: orderId });
 
         if (!selectAmount) {
+            console.log("❌ [400 원인]: payments_temp 컬렉션에서 orderId를 못 찾음 ->", orderId);
             return NextResponse.json({ result: "FAIL", message: "유효한 결제 대기 내역을 찾을 수 없습니다." }, { status: 400 });
         }
 
@@ -57,6 +55,7 @@ export async function POST(request: NextRequest) {
 
         // 금액 검증
         if (Number(selectAmount.amount) !== Number(amount)) {
+            console.log("❌ [400 원인]: 금액 불일치! DB금액:", selectAmount.amount, "/ PG금액:", amount);
             await db.collection('payments_temp').updateOne(
                 { orderId: orderId },
                 { $set: { status: "fail", createdAt: new Date() } }
@@ -79,6 +78,7 @@ export async function POST(request: NextRequest) {
                         });
 
                         if(realInv?.quantity <= 0 || realInv?.quantity < totalCount) {
+                            console.log("❌ [400 원인]: 재고 부족! 현재재고:", realInv?.quantity, "/ 요청수량:", totalCount);
                             await db.collection('payments_temp').updateOne(
                                 { orderId: orderId },
                                 {
