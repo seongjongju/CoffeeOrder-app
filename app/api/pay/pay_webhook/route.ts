@@ -2,9 +2,14 @@ import { connectDB } from "@/app/lib/database";
 import { ObjectId } from "mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const dbName = process.env.DB_NAME;
 
 export async function POST(request: NextRequest) {
+    console.log("=== 웹훅 API 요청 수신 시작 ===");
+
     try {
         const rawText = await request.text();
 
