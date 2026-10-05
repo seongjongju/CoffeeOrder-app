@@ -9,13 +9,6 @@ export async function POST(request:NextRequest) {
     const orderItems: Item[] = body.orderItems;
     const orderType = body.orderType;
 
-    /* 디버깅 콘솔 */
-    console.log("주문서생성-------------------------");
-    console.log("json body : ", body);
-    console.log("orderItems : ", orderItems);
-    console.log("orderType : ", orderType);
-    console.log("주문서생성-------------------------");
-
     try{
         if(!orderItems) {
             return NextResponse.json({error: "요청 값 불일치 또는 잘못된 값", message: "주문 오류! 관리자에게 문의해주세요."}, {status: 401});
@@ -43,7 +36,7 @@ export async function POST(request:NextRequest) {
 
         //결제 상태 = pending
         await db.collection('payments_temp').insertOne({
-            orderId: `ORD${newOrderId}`,
+            orderId: `ORD-${newOrderId}`,
             orderType: orderType,
             userId: userId,
             userName: userName,
@@ -54,7 +47,7 @@ export async function POST(request:NextRequest) {
             createAt: new Date()
         });
 
-        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD${newOrderId}`, orderType: orderType, items: orderItems });
+        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD-${newOrderId}`, orderType: orderType, items: orderItems });
     }catch(err) {
         console.error(err);
         return NextResponse.json({ status: "fail", error: "주문서 생성 오류", message: "결제 준비 오류" }, {status: 500});
