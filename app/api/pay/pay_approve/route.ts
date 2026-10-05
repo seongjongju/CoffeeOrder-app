@@ -20,16 +20,16 @@ export async function POST(request: NextRequest) {
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
 
-        const mallReserved = formData.get("mallReserved") as string;
-        let orderType = null;
-        if (mallReserved) {
-            try {
-                const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
-                orderType = parsed.orderType;
-            } catch (e) {
-                console.warn("mallReserved 파싱 예외 발생:", e);
-            }
-        }
+        //const mallReserved = formData.get("mallReserved") as string;
+        // let orderType = null;
+        // if (mallReserved) {
+        //     try {
+        //         const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
+        //         orderType = parsed.orderType;
+        //     } catch (e) {
+        //         console.warn("mallReserved 파싱 예외 발생:", e);
+        //     }
+        // }
 
         /* 디버깅 콘솔 */
         console.log("authResultCode :", authResultCode);
@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
         console.log("tid :", tid);
         console.log("amount :", amount);
         console.log("orderId :", orderId);
-        console.log("orderType :", orderType);
         console.log("리턴URL-------------------------");
 
         const db = (await connectDB).db(dbName);
@@ -154,10 +153,16 @@ export async function POST(request: NextRequest) {
             await db.collection('inventory').bulkWrite(bulkOps);
         }
 
+        const isOrderId = await db.collection('payments_temp').findOne({ orderId: orderId });
+
+        if (!isOrderId) {
+            return NextResponse.redirect(new URL(`/client/pay/pay_fail?error=${encodeURIComponent('결제실패')}&status=fail&message=${encodeURIComponent('주문 정보를 찾을 수 없습니다.')}`, request.nextUrl), 303);
+        }
+
         //결제 성공 완료 처리
         await db.collection('payments').insertOne({
             orderId: orderId,
-            orderType: orderType,
+            orderType: isOrderId.orderType,
             userId: selectAmount.userId,
             userName: selectAmount.userName,
             items: selectAmount.items,
@@ -172,7 +177,7 @@ export async function POST(request: NextRequest) {
         await db.collection('payments_temp').deleteOne({ orderId: orderId });
 
         //장바구니 결제 시, 장바구니를 비워준다.
-        if(orderType === "cart") {
+        if(isOrderId.orderType === "cart") {
             await db.collection('carts').deleteMany({userId: selectAmount.userId});
         }
         
