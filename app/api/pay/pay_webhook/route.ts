@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
         }
 
         const body = JSON.parse(rawText);
-        const { status, orderId, amount, tid, resultCode, mallReserved } = body;
+        const { status, amount, tid, resultCode, mallReserved } = body;
+        const orderId = body.orderId || body.moid;
         
         let orderType = null;
         if (mallReserved) {
