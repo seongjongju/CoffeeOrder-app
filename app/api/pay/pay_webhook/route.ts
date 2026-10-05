@@ -20,8 +20,12 @@ export async function POST(request: NextRequest) {
         let orderType = null;
         if (mallReserved) {
             try {
-                const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
-                orderType = parsed.orderType;
+                if (typeof mallReserved === "string" && mallReserved.trim().startsWith("{")) {
+                    const parsed = JSON.parse(mallReserved);
+                    orderType = parsed.orderType;
+                } else if (typeof mallReserved === "object") {
+                    orderType = mallReserved.orderType;
+                }
             } catch (e) {
                 console.warn("mallReserved 파싱 예외 발생:", e);
             }
