@@ -43,7 +43,7 @@ export async function POST(request:NextRequest) {
 
         //결제 상태 = pending
         await db.collection('payments_temp').insertOne({
-            orderId: `ORD-${newOrderId}`,
+            orderId: `ORD${newOrderId}`,
             orderType: orderType,
             userId: userId,
             userName: userName,

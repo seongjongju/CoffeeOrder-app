@@ -34,6 +34,7 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                     clientId: process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID,
                     method: 'card',
                     orderId: paymentData.orderId,
+                    moid: paymentData.orderId,
                     mallReserved: JSON.stringify({ orderType: paymentData.orderType }),
                     amount: paymentData.amount,
                     goodsName: payProductName,
