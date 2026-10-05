@@ -17,7 +17,15 @@ export async function POST(request: NextRequest) {
         const body = JSON.parse(rawText);
         const { status, orderId, amount, tid, resultCode, mallReserved } = body;
         
-        const {orderType} = JSON.parse(mallReserved);
+        let orderType = null;
+        if (mallReserved) {
+            try {
+                const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
+                orderType = parsed.orderType;
+            } catch (e) {
+                console.warn("mallReserved 파싱 예외 발생:", e);
+            }
+        }
 
         const db = (await connectDB).db(dbName);
 
@@ -71,6 +79,8 @@ export async function POST(request: NextRequest) {
                                     } 
                                 }
                             );
+
+                            return NextResponse.json({ result: "FAIL", message: "재고 부족" }, { status: 400 });
                         }
 
                         bulkOps.push({
