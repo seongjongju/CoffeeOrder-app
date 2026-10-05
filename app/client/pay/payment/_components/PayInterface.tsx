@@ -21,8 +21,6 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
         try{
             setIsLoading(true);
 
-            console.log(paymentData.orderId);
-
             //제품이 2개 이상일 때 제품명 파라미터
             const payProductName = paymentData?.items.length > 1 ? 
                             `${paymentData.items[0].productName} 외 ${paymentData.items.length - 1}개` :

@@ -20,26 +20,6 @@ export async function POST(request: NextRequest) {
         const amount = formData.get("amount") as string;
         const orderId = formData.get("orderId") as string; 
 
-        //const mallReserved = formData.get("mallReserved") as string;
-        // let orderType = null;
-        // if (mallReserved) {
-        //     try {
-        //         const parsed = typeof mallReserved === "string" ? JSON.parse(mallReserved) : mallReserved;
-        //         orderType = parsed.orderType;
-        //     } catch (e) {
-        //         console.warn("mallReserved 파싱 예외 발생:", e);
-        //     }
-        // }
-
-        /* 디버깅 콘솔 */
-        console.log("authResultCode :", authResultCode);
-        console.log("authToken :", authToken);
-        console.log("paymentKey :", paymentKey);
-        console.log("tid :", tid);
-        console.log("amount :", amount);
-        console.log("orderId :", orderId);
-        console.log("리턴URL-------------------------");
-
         const db = (await connectDB).db(dbName);
 
         //pending 상태의 결제 데이터 조회
@@ -93,11 +73,6 @@ export async function POST(request: NextRequest) {
         });
 
         const resultData = await response.json();
-
-        console.log('승인--------------------');
-        console.log("response:", response);
-        console.log("resultData:", resultData);
-        console.log('승인--------------------');
 
         //최종 결제 승인 실패 시 처리
         if (!response.ok || resultData.resultCode !== "0000") {
