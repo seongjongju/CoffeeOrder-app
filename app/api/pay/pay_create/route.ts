@@ -54,7 +54,7 @@ export async function POST(request:NextRequest) {
             createAt: new Date()
         });
 
-        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD-${newOrderId}`, orderType: orderType, items: orderItems });
+        return NextResponse.json({ status: "pending", message: "주문서 생성", orderId: `ORD${newOrderId}`, orderType: orderType, items: orderItems });
     }catch(err) {
         console.error(err);
         return NextResponse.json({ status: "fail", error: "주문서 생성 오류", message: "결제 준비 오류" }, {status: 500});
