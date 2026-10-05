@@ -6,7 +6,15 @@ const dbName = process.env.DB_NAME;
 
 export async function POST(request: NextRequest) {
     try {
-        const body = await request.json();
+        const rawText = await request.text();
+
+        // 웹 훅 등록 테스트 문자열
+        if (!rawText || !rawText.trim().startsWith("{")) {
+            console.log("나이스페이먼츠 웹훅 URL 정합성 테스트 요청 수신 성공");
+            return NextResponse.json({ result: "SUCCESS" }, { status: 200 });
+        }
+
+        const body = JSON.parse(rawText);
         const { status, orderId, amount, tid, resultCode, mallReserved } = body;
         
         const {orderType} = JSON.parse(mallReserved);
