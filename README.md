@@ -103,7 +103,7 @@ GMAIL_USER=your_gmail_account
 GMAIL_APP_PASSWORD=your_gmail_app_password
 
 # 나이스페이먼츠
-NEXT_PUBLIC_NICEPAY_SECRET_KEY=your_nicepay_secret_key
+NEXT_NICEPAY_SECRET_KEY=your_nicepay_secret_key
 NEXT_PUBLIC_NICEPAY_CLIENT_ID=your_nicepay_client_id
 NEXT_PUBLIC_NICEPAY_URL=your_nicepay_url
 
