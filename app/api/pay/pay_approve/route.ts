@@ -7,7 +7,7 @@ const dbName = process.env.DB_NAME;
 
 //나이스페이먼츠
 const clientId = process.env.NEXT_PUBLIC_NICEPAY_CLIENT_ID;
-const secretKey = process.env.NEXT_PUBLIC_NICEPAY_SECRET_KEY;
+const secretKey = process.env.NEXT_NICEPAY_SECRET_KEY;
 
 export async function POST(request: NextRequest) {
     try {
@@ -60,8 +60,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.redirect(new URL(`/client/pay/pay_fail?error=${encodeURIComponent('결제실패')}&status=fail&message=${encodeURIComponent('오류로 인해 결제에 실패하였습니다.')}`, request.nextUrl), 303);
         }
 
-        console.log("승인 요청 TID:", tid, new Date().toISOString())
-
         //나이스페이먼츠 승인 API 호출
         const response = await fetch(`${process.env.NEXT_PUBLIC_NICEPAY_URL}/${tid}`, {
             method: "POST",
@@ -85,6 +83,7 @@ export async function POST(request: NextRequest) {
                     } 
                 }
             );
+
             return NextResponse.redirect(new URL(`/client/pay/pay_fail?error=${encodeURIComponent('결제실패')}&status=fail&message=${encodeURIComponent(resultData.resultMsg)}`, request.nextUrl), 303);
         }
 

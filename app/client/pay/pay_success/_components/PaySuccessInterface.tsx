@@ -6,6 +6,7 @@ import Button from '@/shared/client/components/button/Button';
 import check from '@/public/icons/circle_check.svg';
 import Image from 'next/image';
 import CancelButton from '@/shared/client/components/button/CancelButton';
+import { nanoid } from 'nanoid';
 import React, { useEffect, useRef } from 'react';
 import { UserProps } from '@/app/types/members/member';
 
@@ -15,11 +16,10 @@ const PaySuccessInterface = ({user}: UserProps) => {
 
     const searchParams = useSearchParams();
     const productName = searchParams.get('productName');
-    const userId = searchParams.get('userId');
     const isNotificationSent = useRef(false);
 
     useEffect(() => {
-        if(user.userId !== userId) return;
+        if(!user.userId) return;
         
         // 중복 실행 방지
         if (isNotificationSent.current) return;
@@ -35,7 +35,8 @@ const PaySuccessInterface = ({user}: UserProps) => {
 
             //알람 내역에 추가
             dispatch(addToAlert({
-                userId: userId,
+                id: nanoid(),
+                userId: user.userId,
                 text: `${productName} 주문이 완료되었습니다.`,
             }));
 
@@ -48,12 +49,13 @@ const PaySuccessInterface = ({user}: UserProps) => {
 
                 //알람 내역에 추가
                 dispatch(addToAlert({
-                    userId: userId,
+                    id: nanoid(),
+                    userId: user.userId,
                     text: `${productName} 준비되었습니다! 픽업해 주세요.`,
                 }));
             }, 5000);
         }
-    }, [user, userId, productName, dispatch]);
+    }, [user, productName, dispatch]);
 
     const goToHome = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();

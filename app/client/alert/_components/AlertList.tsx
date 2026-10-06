@@ -17,7 +17,7 @@ const AlertList = ({user}: UserProps) => {
                         {
                             userAlerts?.map((al) => (
                                 <li 
-                                    key={al.text}
+                                    key={al.id}
                                     className='alert__li'
                                 >
                                     <img

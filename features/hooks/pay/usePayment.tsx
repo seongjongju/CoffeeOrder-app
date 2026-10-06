@@ -2,7 +2,7 @@
 import { Item } from '@/app/types/pay/pay';
 import { payCreateApi } from '@/features/clientApi/payApy';
 import { useRouter } from 'next/navigation';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 interface UsePaymentProps {
     items: Item[];
@@ -15,16 +15,21 @@ const usePayment = (
 ) => {
     const router = useRouter();
 
-    const addPayment = useCallback(async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const addPayment = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        console.log("주문서생성 시작");
+
         e.preventDefault();
         try {
             const data = await payCreateApi(items, orderType);
 
+            console.log(
+                "items:", items,
+                "orderType:", orderType
+            );
+
             if (data.status === "fail") {
-                console.log(data.message);
                 return;
             }
-            console.log(data.message);
             router.push(`/client/pay/payment?orderId=${data.orderId}`);
             return;
         } catch (err: any) {
@@ -32,7 +37,7 @@ const usePayment = (
             alert(`${err.response?.data?.message}`);
             return;
         }
-    }, [items, orderType, router]);
+    };
 
     return {
         addPayment

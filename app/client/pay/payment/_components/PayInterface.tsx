@@ -47,7 +47,10 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
 
             return;
         }catch(err: any) {
-            console.error(err.response?.data?.message);
+            console.error("결제 요청 에러 전체:", err);
+            console.error("에러 메시지:", err?.message);
+            console.error("NICEPAY 에러 메시지:", err?.msg);
+            console.error("NICEPAY 에러 상세:", err?.errorMsg);
             setIsLoading(false);
             return;
         } 

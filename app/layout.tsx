@@ -63,7 +63,7 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Script
           src="https://pay.nicepay.co.kr/v1/js/"
-          strategy="beforeInteractive"
+          strategy="afterInteractive"
         />
         <QueryProvider>
           <HydrationBoundary state={dehydrate(queryClient)}>
