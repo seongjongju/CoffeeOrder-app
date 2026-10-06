@@ -36,7 +36,6 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
                     orderId: paymentData.orderId,
                     amount: paymentData.amount,
                     goodsName: payProductName,
-                    notificationUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_webhook`,
                     returnUrl: `${process.env.NEXT_PUBLIC_FRONT_API_URL}/api/pay/pay_approve`, //API를 호출할 Endpoint 입력
                     fnError: function (result: any) {
                         alert('고객용메시지 : ' + result.errorMsg + '\n개발자확인용 : ' + result.msg);
@@ -47,10 +46,7 @@ const PayInterface = ({paymentData}: paymentInterfaceProps) => {
 
             return;
         }catch(err: any) {
-            console.error("결제 요청 에러 전체:", err);
-            console.error("에러 메시지:", err?.message);
-            console.error("NICEPAY 에러 메시지:", err?.msg);
-            console.error("NICEPAY 에러 상세:", err?.errorMsg);
+            console.error(err.response?.data?.message);
             setIsLoading(false);
             return;
         } 
