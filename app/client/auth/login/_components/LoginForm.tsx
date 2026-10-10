@@ -8,15 +8,12 @@ import { validations } from '@/app/util/client/Validation';
 import useModalShow from '@/features/hooks/modal/useModalShow';
 import Modal from '@/shared/client/components/modal/Modal';
 import { loginApi, meApi } from '@/features/clientApi/authApi';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '@/store/auth/authSlice';
 import useLoading from '@/features/hooks/loading/useLoading';
 import SpinerButton from '@/shared/client/components/button/SpinerButton';
 
 const LoginForm = () => {
     const {modalShow, setModalShow, modalText, setModalText} = useModalShow();
     const {isLoading, setIsLoading} = useLoading();
-    const dispatch = useDispatch();
     const [userId, setUserId] = useState('');
     const [userPwd, setUserPwd] = useState('');
     const [loginErrorMsg, setLoginErrorMsg] = useState({

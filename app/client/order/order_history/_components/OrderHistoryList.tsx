@@ -2,7 +2,6 @@
 import useOrderQuery from '@/features/hooks/query/useOrderQuery';
 import React from 'react';
 import OrderHistoryItem from './OrderHistoryItem';
-import { useAppSelector } from '@/store/hook';
 import OrderItemNone from './OrderItemNone';
 import { UserProps } from '@/app/types/members/member';
 

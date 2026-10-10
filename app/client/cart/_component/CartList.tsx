@@ -1,13 +1,12 @@
 'use client';
 import useCartQuery from '@/features/hooks/query/useCartQuery';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import CartItem from './CartItem';
 import { useQueryClient } from '@tanstack/react-query';
 import { allDeleteCartApi } from '@/features/clientApi/cartApi';
 import useModalShow from '@/features/hooks/modal/useModalShow';
 import Modal from '@/shared/client/components/modal/Modal';
 import CartItemNone from './CartItemNone';
-import { useAppSelector } from '@/store/hook';
 import { formatPrice } from '@/app/util/format';
 import usePayment from '@/features/hooks/pay/usePayment';
 import useLoading from '@/features/hooks/loading/useLoading';

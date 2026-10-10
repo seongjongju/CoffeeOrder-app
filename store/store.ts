@@ -11,7 +11,6 @@ import {
     REGISTER,
 } from 'redux-persist';
 import alertReducer from '@/store/alert/alertSlice';
-import authReducer from '@/store/auth/authSlice';
 
 const persistConfig = {
     key: 'root', 
@@ -20,7 +19,6 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-    auth: authReducer,
     alert: alertReducer,
 });
 

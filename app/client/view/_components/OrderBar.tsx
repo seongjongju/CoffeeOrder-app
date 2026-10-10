@@ -10,7 +10,6 @@ import { OptionState, ProductImgType } from '@/app/types/products/product';
 import { formatPrice } from '@/app/util/format';
 import { addCartApi } from '@/features/clientApi/cartApi';
 import { useQueryClient } from '@tanstack/react-query';
-import { useAppSelector } from '@/store/hook';
 import usePayment from '@/features/hooks/pay/usePayment';
 import { User } from '@/app/types/members/member';
 interface OptionProps {

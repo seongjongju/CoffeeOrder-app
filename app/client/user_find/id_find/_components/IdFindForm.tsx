@@ -2,7 +2,6 @@
 import React from 'react';
 import Image from 'next/image';
 import mascot from '@/public/images/mascot.png';
-import Button from '@/shared/client/components/button/Button';
 import FindInput from '../../_components/FindInput';
 import { useState } from 'react';
 import { validations } from '@/app/util/client/Validation';

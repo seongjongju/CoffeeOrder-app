@@ -1,7 +1,6 @@
 'use client';
 import { formatPrice } from '@/app/util/format';
-import { useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 import { Item, paymentData } from '@/app/types/pay/pay';
 import useConfilmShow from '@/features/hooks/confirm/useConfilmShow';
 import Confirm from '@/shared/client/components/confirm/Confirm';

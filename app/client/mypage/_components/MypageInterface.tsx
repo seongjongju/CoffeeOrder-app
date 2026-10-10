@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from '@/store/hook';
 import useModalShow from '@/features/hooks/modal/useModalShow';
 import Modal from '@/shared/client/components/modal/Modal';
 import { logoutApi } from '@/features/clientApi/authApi';
-import { logout } from '@/store/auth/authSlice';
 import { formatPhoneNumber } from '@/app/util/format';
 import { allDeleteAlert } from '@/store/alert/alertSlice';
 import { UserProps } from '@/app/types/members/member';

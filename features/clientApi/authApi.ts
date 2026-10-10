@@ -92,14 +92,6 @@ export const loginApi = async (
     return data;
 };
 
-// 유저 정보
-export const meApi = async () => {
-    const res = await api_1.get('/auth/me', {});
-
-    const data = await res.data;
-    return data;
-};
-
 //************************* 로그아웃
 export const logoutApi = async () => {
     const res = await api.post('/auth/logout');

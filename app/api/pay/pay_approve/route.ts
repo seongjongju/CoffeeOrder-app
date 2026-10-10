@@ -74,11 +74,6 @@ export async function POST(request: NextRequest) {
 
         //최종 결제 승인 실패 시 처리
         if (!response.ok || resultData.resultCode !== "0000") {
-            console.log("승인실패-----------------------------");
-            console.log(response);
-            console.log(resultData);
-            console.log("승인실패-----------------------------");
-
             await db.collection('payments_temp').updateOne(
                 { orderId: orderId },
                 {
@@ -91,11 +86,6 @@ export async function POST(request: NextRequest) {
 
             return NextResponse.redirect(new URL(`/client/pay/pay_fail?error=${encodeURIComponent('결제실패')}&status=fail&message=${encodeURIComponent(resultData.resultMsg)}`, request.nextUrl), 303);
         }
-
-        console.log("승인성공-----------------------------");
-        console.log(response);
-        console.log(resultData);
-        console.log("승인성공-----------------------------");
 
         //결제 성공 시 사용재고를 차감한다.
         const bulkOps = [];
