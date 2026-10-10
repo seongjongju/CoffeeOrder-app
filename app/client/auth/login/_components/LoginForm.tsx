@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { validations } from '@/app/util/client/Validation';
 import useModalShow from '@/features/hooks/modal/useModalShow';
 import Modal from '@/shared/client/components/modal/Modal';
-import { loginApi, meApi } from '@/features/clientApi/authApi';
+import { loginApi } from '@/features/clientApi/authApi';
 import useLoading from '@/features/hooks/loading/useLoading';
 import SpinerButton from '@/shared/client/components/button/SpinerButton';
 
