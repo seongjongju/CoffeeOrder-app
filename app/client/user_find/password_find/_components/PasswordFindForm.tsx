@@ -6,7 +6,7 @@ import FindInput from '../../_components/FindInput';
 import useModalShow from '@/features/hooks/modal/useModalShow';
 import Modal from '@/shared/client/components/modal/Modal';
 import { validations } from '@/app/util/client/Validation';
-import { resetPasswordApi } from '@/features/clientApi/authApi';
+import { logoutApi, resetPasswordApi } from '@/features/clientApi/authApi';
 import { formatPhoneNumber } from '@/app/util/format';
 import useLoading from '@/features/hooks/loading/useLoading';
 import SpinerButton from '@/shared/client/components/button/SpinerButton';
@@ -84,6 +84,7 @@ const PasswordFindForm = () => {
         try {
             setIsLoading(true);
 
+            //비밀번호 변경 API
             const data = await resetPasswordApi(
                 resetPwdInputs.userId, 
                 resetPwdInputs.userPhoneNumber,
@@ -92,6 +93,15 @@ const PasswordFindForm = () => {
 
             if(!data.success) {
                 setModalText(`${data.message}`);
+                setModalShow(true);
+                return;
+            }
+
+            //로그아웃 API
+            const logOutData = await logoutApi();
+
+            if(!logOutData.success) {
+                setModalText(`${logOutData.message}`);
                 setModalShow(true);
                 return;
             }

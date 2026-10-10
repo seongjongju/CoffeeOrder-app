@@ -3,9 +3,6 @@ import React from 'react';
 import '@/shared/client/styled/modal/modal.css';
 import Button from '../../components/button/Button';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAppDispatch } from '@/store/hook';
-import { logout } from '@/store/auth/authSlice';
-
 interface ModalProps {
     modalShow: boolean;
     setModalShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,7 +13,6 @@ interface ModalProps {
 const Modal = ({ modalShow, setModalShow, modalText, setModalText } : ModalProps) => {
     const pathName = usePathname();
     const router = useRouter();
-    const dispatch = useAppDispatch();
 
     const modalInit = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -30,7 +26,6 @@ const Modal = ({ modalShow, setModalShow, modalText, setModalText } : ModalProps
             return;
         } else if(pathName.includes('/password_find')) {
             if(modalText === "비밀번호가 변경되었습니다.") {
-                dispatch(logout());
                 router.push('/client/auth/login');
                 return;
             }
