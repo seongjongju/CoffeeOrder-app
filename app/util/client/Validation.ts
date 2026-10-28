@@ -1,5 +1,5 @@
 export const validations = {
-    idRegex: /^[a-z0-9]{5,12}$/,
+    idRegex: /^(?=[a-z0-9]{4,12}$)[a-z]{3,}[0-9]+$/,
     passwordRegex: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+=-]).{8,}$/,
     nameRegex: /^[가-힣]{2,10}$/,
     phoneNumberRegex: /^010[0-9]{8}$/,
